@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -20,7 +19,7 @@ import org.slf4j.Logger;
 public class MtrecipexMod{
 	public static final String MODID="mtrecipex";
 	public static final Logger LOGGER=LogUtils.getLogger();
-	public MtrecipexMod(IEventBus modEventBus,ModContainer modContainer){
+	public MtrecipexMod(IEventBus modEventBus){
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
 		MTRecipexRegistry.addShaped("dirt_to_diamond",
