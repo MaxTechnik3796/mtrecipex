@@ -7,10 +7,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.HashMap;
 import java.util.Map;
-public class MTRecipexRegistry{
+@SuppressWarnings("unused")
+public class MTRecipexModRegistry{
 	public static final Map<ResourceLocation,JsonElement> RECIPIES=new HashMap<>();
 	/**
 	 * 1. SHAPED RECEPT (1.7.10 Styl s mřížkou)
@@ -42,7 +44,7 @@ public class MTRecipexRegistry{
 		resultObject.addProperty("id",resultId);
 		resultObject.addProperty("count",result.getCount());
 		recipeJson.add("result",resultObject);
-		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MtrecipexMod.MODID,name),recipeJson);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	/**
 	 * 2. SHAPELESS RECEPT (Beztvarý)
@@ -64,39 +66,25 @@ public class MTRecipexRegistry{
 		resultObject.addProperty("id",BuiltInRegistries.ITEM.getKey(result.getItem()).toString());
 		resultObject.addProperty("count",result.getCount());
 		recipeJson.add("result",resultObject);
-		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MtrecipexMod.MODID,name),recipeJson);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	/**
-	 * 3A. ZÁKLADNÍ CREATE PROCESSING (Bez času a tepla)
+	 * 3A. ZÁKLADNÍ CREATE PROCESSING (Pro jednosložkové věci - Milling, Pressing)
 	 */
-	public static void addCreateProcessing(String name,String createType,ItemLike ingredient,CreateOutput... outputs){
-		addCreateProcessing(name,createType,ingredient,-1,HeatLevel.NONE,outputs);
+	public static void addCreateProcessing(String name,CreateRecipeType type,ItemLike ingredient,CreateOutput... outputs){
+		addCreateProcessing(name,type,ingredient,-1,outputs);
 	}
 	/**
-	 * 3B. CREATE PROCESSING S ČASEM (Ideální pro milling, crushing - např. 200 ticks)
+	 * 3B. CREATE PROCESSING S ČASEM (Pro Crushing / Milling s jedním vstupem)
 	 */
-	public static void addCreateProcessing(String name,String createType,ItemLike ingredient,int processingTime,CreateOutput... outputs){
-		addCreateProcessing(name,createType,ingredient,processingTime,HeatLevel.NONE,outputs);
-	}
-	/**
-	 * 3C. CREATE PROCESSING S TEPLEM (Ideální pro mixing, compacting)
-	 */
-	public static void addCreateProcessing(String name,String createType,ItemLike ingredient,HeatLevel heatRequirement,CreateOutput... outputs){
-		addCreateProcessing(name,createType,ingredient,-1,heatRequirement,outputs);
-	}
-	/**
-	 * 3D. HLAVNÍ METODA: CREATE PROCESSING S ČASEM I TEPLEM
-	 */
-	public static void addCreateProcessing(String name,String createType,ItemLike ingredient,int processingTime,HeatLevel heat,CreateOutput... outputs){
+	public static void addCreateProcessing(String name,CreateRecipeType type,ItemLike ingredient,int processingTime,CreateOutput... outputs){
 		JsonObject recipeJson=new JsonObject();
-		recipeJson.addProperty("type","create:"+createType);
-		// Vstupy (Ingredients)
+		recipeJson.addProperty("type","create:"+type.id);
 		JsonArray ingredientsArray=new JsonArray();
 		JsonObject ingObj=new JsonObject();
 		ingObj.addProperty("item",BuiltInRegistries.ITEM.getKey(ingredient.asItem()).toString());
 		ingredientsArray.add(ingObj);
 		recipeJson.add("ingredients",ingredientsArray);
-		// Výstupy (Results)
 		JsonArray resultsArray=new JsonArray();
 		for(CreateOutput out: outputs){
 			JsonObject resObj=new JsonObject();
@@ -108,15 +96,65 @@ public class MTRecipexRegistry{
 			resultsArray.add(resObj);
 		}
 		recipeJson.add("results",resultsArray);
-		// PŘIDÁNÍ ČASU (Pokud je zadán větší než 0)
 		if(processingTime>0){
 			recipeJson.addProperty("processingTime",processingTime);
 		}
-		// PŘIDÁNÍ TEPLA (Pokud je jiné než "none")
-		if(!heat.equals(HeatLevel.NONE)){
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
+	}
+	/**
+	 * 4. POKROČILÝ CREATE RECEPT (Ideální pro Mixing a Compacting)
+	 * - Žádný processing time
+	 * - List (pole) čistých Itemů na vstupu
+	 * - Podpora pro tekutiny (Fluidy) na vstupu i výstupu
+	 */
+	public static void addCreateAdvanced(String name,CreateRecipeType type,HeatLevel heat,ItemLike[] itemInputs,FluidStack[] fluidInputs,CreateOutput[] itemOutputs,FluidStack[] fluidOutputs){
+		JsonObject recipeJson=new JsonObject();
+		recipeJson.addProperty("type","create:"+type.id);
+		// --- VSTUPY (Ingredients) ---
+		JsonArray ingredientsArray=new JsonArray();
+		if(itemInputs!=null){
+			for(ItemLike item: itemInputs){
+				JsonObject obj=new JsonObject();
+				obj.addProperty("item",BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
+				ingredientsArray.add(obj);
+			}
+		}
+		if(fluidInputs!=null){
+			for(FluidStack fluid: fluidInputs){
+				JsonObject obj=new JsonObject();
+				obj.addProperty("fluid",BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
+				obj.addProperty("amount",fluid.getAmount());
+				ingredientsArray.add(obj);
+			}
+		}
+		recipeJson.add("ingredients",ingredientsArray);
+		// --- VÝSTUPY (Results) ---
+		JsonArray resultsArray=new JsonArray();
+		if(itemOutputs!=null){
+			for(CreateOutput out: itemOutputs){
+				JsonObject obj=new JsonObject();
+				obj.addProperty("item",BuiltInRegistries.ITEM.getKey(out.stack().getItem()).toString());
+				obj.addProperty("count",out.stack().getCount());
+				if(out.chance()<1.0f){
+					obj.addProperty("chance",out.chance());
+				}
+				resultsArray.add(obj);
+			}
+		}
+		if(fluidOutputs!=null){
+			for(FluidStack fluid: fluidOutputs){
+				JsonObject obj=new JsonObject();
+				obj.addProperty("fluid",BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
+				obj.addProperty("amount",fluid.getAmount());
+				resultsArray.add(obj);
+			}
+		}
+		recipeJson.add("results",resultsArray);
+		// --- TEPLO ---
+		if(heat!=null&&heat!=HeatLevel.NONE){
 			recipeJson.addProperty("heatRequirement",heat.lvl);
 		}
-		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MtrecipexMod.MODID,name),recipeJson);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	public static Map<ResourceLocation,JsonElement> getVirtualRecipes(){
 		return RECIPIES;
