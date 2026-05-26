@@ -1,0 +1,14 @@
+.DS_Store
+.gradle
+build
+out/
+.idea
+*.iml
+.idea_modules/
+hs_err_pid*
+/desktop.ini
+/resources.lnk
+run
+/run-data/
+/run-server/
+libs
