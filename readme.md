@@ -36,7 +36,7 @@
 ### 4. Sequenced Assembly
 * **`addCreateSequencedAssembly`:** Used for Precision Mechanisms and high-tech components.
 * **Complete Sub-Step Automation:** Manually coding JSONs for sequences is extremely tedious in 1.21.1 **MT-Recipex handles all of this automatically behind the scenes!** You only define the steps in their natural order.
-* **Built-in Step Factory Methods:** `stepPressing()`, `stepCutting(time)`, `stepFilling(FluidStack)`, `海洋stepDeploying(ItemLike)`.
+* **Built-in Step Factory Methods:** `stepPressing()`, `stepCutting(time)`, `stepFilling(FluidStack)`, `stepDeploying(ItemLike)`.
 
 ### 5. Custom Raw JSON Recipes
 * **Custom (`addCustom`):** Allows you to build and inject a completely raw `JsonObject` for any custom recipe type from other mods that are not natively supported by the API.
