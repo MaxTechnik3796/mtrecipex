@@ -212,6 +212,9 @@ public class MTRecipexModRegistry{
 		}
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
+	/**
+	 *Distillation
+	 */
 	public static void addDifDistillation(String name,FluidStack input,FluidStack[] outputs){
 		JsonObject recipeJson=new JsonObject();
 		recipeJson.addProperty("type","dif:distillation");
@@ -231,8 +234,6 @@ public class MTRecipexModRegistry{
 		recipeJson.add("input",inputJson);
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
-
-
 	/**
 	 *Filling (Spout)
 	 */
