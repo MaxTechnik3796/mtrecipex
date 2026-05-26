@@ -213,28 +213,6 @@ public class MTRecipexModRegistry{
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	/**
-	 *Distillation
-	 */
-	public static void addDifDistillation(String name,FluidStack input,FluidStack[] outputs){
-		JsonObject recipeJson=new JsonObject();
-		recipeJson.addProperty("type","dif:distillation");
-		JsonObject inputJson=new JsonObject();
-		inputJson.addProperty("fluid",BuiltInRegistries.FLUID.getKey(input.getFluid()).toString());
-		inputJson.addProperty("amount",input.getAmount());
-		JsonArray outputsArray=new JsonArray();
-		if(outputs!=null){
-			for(FluidStack fluid: outputs){
-				JsonObject obj=new JsonObject();
-				obj.addProperty("id",BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
-				obj.addProperty("amount",fluid.getAmount());
-				outputsArray.add(obj);
-			}
-		}
-		recipeJson.add("outputs",outputsArray);
-		recipeJson.add("input",inputJson);
-		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
-	}
-	/**
 	 *Filling (Spout)
 	 */
 	public static void addCreateFilling(String name,ItemLike itemInput,FluidStack fluidInput,CreateOutput itemOutput){
@@ -427,6 +405,28 @@ public class MTRecipexModRegistry{
 		}
 		recipeJson.add("results",resultsArray);
 		recipeJson.addProperty("loops",loops);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
+	}
+	/**
+	 *Distillation
+	 */
+	public static void addDifDistillation(String name,FluidStack input,FluidStack[] outputs){
+		JsonObject recipeJson=new JsonObject();
+		recipeJson.addProperty("type","dif:distillation");
+		JsonObject inputJson=new JsonObject();
+		inputJson.addProperty("fluid",BuiltInRegistries.FLUID.getKey(input.getFluid()).toString());
+		inputJson.addProperty("amount",input.getAmount());
+		JsonArray outputsArray=new JsonArray();
+		if(outputs!=null){
+			for(FluidStack fluid: outputs){
+				JsonObject obj=new JsonObject();
+				obj.addProperty("id",BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
+				obj.addProperty("amount",fluid.getAmount());
+				outputsArray.add(obj);
+			}
+		}
+		recipeJson.add("outputs",outputsArray);
+		recipeJson.add("input",inputJson);
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	public static JsonObject stepPressing(){
