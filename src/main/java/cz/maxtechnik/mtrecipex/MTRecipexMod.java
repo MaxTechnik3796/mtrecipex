@@ -25,7 +25,7 @@ public class MTRecipexMod{
 	public MTRecipexMod(IEventBus modEventBus){
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
-		MTRecipexModRegistry.addShaped("dirt_to_diamond",new ItemStack(Items.DIAMOND),"DDD","DDD","DDD",'D',Blocks.DIRT);
+		/*MTRecipexModRegistry.addShaped("dirt_to_diamond",new ItemStack(Items.DIAMOND),"DDD","DDD","DDD",'D',Blocks.DIRT);
 		MTRecipexModRegistry.addShaped("dirt_beacon",new ItemStack(Blocks.BEACON,3),"DDD","DID","DDD",'D',Blocks.DIRT,'I',Items.IRON_INGOT);
 		MTRecipexModRegistry.addShapeless("clay_flint_to_iron",new ItemStack(Items.IRON_INGOT,2),Blocks.CLAY,Items.FLINT);
 		MTRecipexModRegistry.addCreateProcessing("crush_rose_bush",CreateRecipeType.CRUSHING,
@@ -83,7 +83,12 @@ public class MTRecipexMod{
 				MTRecipexModRegistry.stepCutting(100),
 				MTRecipexModRegistry.stepFilling(new FluidStack(Fluids.WATER,100)),
 				MTRecipexModRegistry.stepDeploying(Items.FLINT)
-		);
+		);*/
+
+		MTRecipexModRegistry.addDifDistillation("test",new FluidStack(Fluids.WATER,10),new FluidStack[]{
+				new FluidStack(Fluids.LAVA,10),
+				new FluidStack(Fluids.WATER,10),
+		});
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("MT-Recipex: Common Setup");

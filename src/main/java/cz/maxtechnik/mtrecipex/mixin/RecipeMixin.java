@@ -11,13 +11,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
+import static cz.maxtechnik.mtrecipex.MTRecipexMod.LOGGER;
+import static cz.maxtechnik.mtrecipex.MTRecipexModRegistry.getVirtualRecipes;
 import java.util.Map;
 @Mixin(RecipeManager.class)
 public class RecipeMixin{
 	@Inject(method="apply*", at=@At("HEAD"))
 	private void injectVirtualRecipes(Map<ResourceLocation,JsonElement> map,ResourceManager resourceManager,ProfilerFiller profiler,CallbackInfo ci){
-		MTRecipexMod.LOGGER.info("Applying Virtual Recipes");
-		map.putAll(MTRecipexModRegistry.getVirtualRecipes());
+		LOGGER.info("Applying Virtual Recipes...");
+		LOGGER.info("Jsons of Virtual Recipes: {}",getVirtualRecipes());
+		map.putAll(getVirtualRecipes());
 	}
 }
