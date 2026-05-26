@@ -10,7 +10,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -24,7 +23,6 @@ public class MtrecipexMod{
 	public MtrecipexMod(IEventBus modEventBus,ModContainer modContainer){
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
-		modContainer.registerConfig(ModConfig.Type.COMMON,MtrecipexModCommonConfig.SPEC);
 		MTRecipexRegistry.addShaped("dirt_to_diamond",
 				new ItemStack(Items.DIAMOND),
 				"DDD",
