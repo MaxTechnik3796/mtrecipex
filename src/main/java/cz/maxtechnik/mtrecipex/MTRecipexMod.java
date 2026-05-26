@@ -25,11 +25,11 @@ public class MTRecipexMod{
 	public MTRecipexMod(IEventBus modEventBus){
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
-		MTRecipexModRegistry.addShaped("dirt_to_diamond",new ItemStack(Items.DIAMOND),"DDD","DDD","DDD",'D',Blocks.DIRT);
+		/*MTRecipexModRegistry.addShaped("dirt_to_diamond",new ItemStack(Items.DIAMOND),"DDD","DDD","DDD",'D',Blocks.DIRT);
 		MTRecipexModRegistry.addShaped("dirt_beacon",new ItemStack(Blocks.BEACON,3),"DDD","DID","DDD",'D',Blocks.DIRT,'I',Items.IRON_INGOT);
 		MTRecipexModRegistry.addShapeless("clay_flint_to_iron",new ItemStack(Items.IRON_INGOT,2),Blocks.CLAY,Items.FLINT);
 		MTRecipexModRegistry.addCreateProcessing("crush_rose_bush",CreateRecipeType.CRUSHING,
-				Blocks.ROSE_BUSH,250,
+				Items.GOLDEN_APPLE,250,
 				CreateOutput.of(new ItemStack(Items.RED_DYE,4)),
 				CreateOutput.of(new ItemStack(Items.GREEN_DYE,1),0.5F)
 		);
@@ -66,12 +66,12 @@ public class MTRecipexMod{
 		// Umožní ti poskládat velký recept bez JSONu
 		MTRecipexModRegistry.addCreateMechanicalCrafting("giant_sword",
 				new ItemStack(Items.NETHERITE_SWORD),true,
-				"  N  ",
+				"  N  ","  N  ","  N  ",
 				"  N  ",
 				"  I  ",
 				'N',Blocks.NETHERITE_BLOCK,
 				'I',Blocks.IRON_BLOCK
-		);
+		);*/
 		// 4. MAJSTRŠTYK: SEKVENČNÍ SESTAVOVÁNÍ (Sequenced Assembly - Precision Mechanism)
 		// Vstup: Železný ingot, Přechodný item: Zlatý ingot, Smyčky: 3x, Finální výstup: Diamant (100% šance)
 		// Kroky v jedné smyčce: Zlisovat -> Oříznout -> Naplnit vodou -> Přimontovat Flint přes Deployer
