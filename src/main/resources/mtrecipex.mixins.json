@@ -4,6 +4,7 @@
 	"package":"cz.maxtechnik.mtrecipex.mixin",
 	"compatibilityLevel":"JAVA_21",
 	"mixins":[
+		"RecipeManagerMixin"
 	],
 	"client":[
 	],
