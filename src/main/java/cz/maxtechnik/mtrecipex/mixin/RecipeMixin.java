@@ -19,5 +19,6 @@ public class RecipeMixin{
 	private void injectVirtualRecipes(Map<ResourceLocation,JsonElement> map,ResourceManager resourceManager,ProfilerFiller profiler,CallbackInfo ci){
 		MTRecipexMod.LOGGER.info("Applying Virtual Recipes");
 		map.putAll(MTRecipexModRegistry.getVirtualRecipes());
+		System.out.println("NECO"+MTRecipexModRegistry.getVirtualRecipes());
 	}
 }
