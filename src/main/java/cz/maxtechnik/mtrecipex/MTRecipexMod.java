@@ -25,7 +25,7 @@ public class MTRecipexMod{
 	public MTRecipexMod(IEventBus modEventBus){
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
-		/*MTRecipexModRegistry.addShaped("dirt_to_diamond",new ItemStack(Items.DIAMOND),"DDD","DDD","DDD",'D',Blocks.DIRT);
+		MTRecipexModRegistry.addShaped("dirt_to_diamond",new ItemStack(Items.DIAMOND),"DDD","DDD","DDD",'D',Blocks.DIRT);
 		MTRecipexModRegistry.addShaped("dirt_beacon",new ItemStack(Blocks.BEACON,3),"DDD","DID","DDD",'D',Blocks.DIRT,'I',Items.IRON_INGOT);
 		MTRecipexModRegistry.addShapeless("clay_flint_to_iron",new ItemStack(Items.IRON_INGOT,2),Blocks.CLAY,Items.FLINT);
 		MTRecipexModRegistry.addCreateProcessing("crush_rose_bush",CreateRecipeType.CRUSHING,
@@ -33,7 +33,7 @@ public class MTRecipexMod{
 				CreateOutput.of(new ItemStack(Items.RED_DYE,4)),
 				CreateOutput.of(new ItemStack(Items.GREEN_DYE,1),0.5F)
 		);
-		MTRecipexModRegistry.addCreateAdvanced("super_mixing_test",
+		MTRecipexModRegistry.addCreateBasin("super_mixing_test",
 				CreateRecipeType.MIXING,
 				HeatLevel.HEATED,
 				new ItemLike[]{Blocks.DIRT,Items.SUGAR},
@@ -41,13 +41,11 @@ public class MTRecipexMod{
 				new CreateOutput[]{CreateOutput.of(new ItemStack(Items.BLAZE_POWDER,2))},
 				new FluidStack[]{new FluidStack(Fluids.LAVA,250)}
 		);
-		MTRecipexModRegistry.addCreateAdvanced("compact_items_to_diamond",
+		MTRecipexModRegistry.addCreateBasin("compact_items_to_diamond",
 				CreateRecipeType.COMPACTING,
 				HeatLevel.NONE,
 				new ItemLike[]{Blocks.COBBLESTONE,Blocks.SAND,Blocks.GRAVEL},
-				null,
-				new CreateOutput[]{CreateOutput.of(new ItemStack(Items.DIAMOND))},
-				null
+				new CreateOutput[]{CreateOutput.of(new ItemStack(Items.DIAMOND))}
 		);
 		// 1. UKÁZKA PLNIČKY (Filling)
 		// Skleněná láhev se naplní 250mb lávy a vznikne Magma Cream
@@ -71,7 +69,7 @@ public class MTRecipexMod{
 				"  I  ",
 				'N',Blocks.NETHERITE_BLOCK,
 				'I',Blocks.IRON_BLOCK
-		);*/
+		);
 		// 4. MAJSTRŠTYK: SEKVENČNÍ SESTAVOVÁNÍ (Sequenced Assembly - Precision Mechanism)
 		// Vstup: Železný ingot, Přechodný item: Zlatý ingot, Smyčky: 3x, Finální výstup: Diamant (100% šance)
 		// Kroky v jedné smyčce: Zlisovat -> Oříznout -> Naplnit vodou -> Přimontovat Flint přes Deployer

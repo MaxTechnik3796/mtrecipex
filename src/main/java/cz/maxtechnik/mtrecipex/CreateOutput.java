@@ -2,9 +2,9 @@ package cz.maxtechnik.mtrecipex;
 
 import net.minecraft.world.item.ItemStack;
 /**
- * Pomocný objekt pro Create výstupy kombinující ItemStack a šanci (0.0 až 1.0)
+ * Create Outputs, ItemStack & chance (0.0 - 1.0)
  */
-public record CreateOutput(ItemStack stack,float chance){
+public record CreateOutput(ItemStack itemStack,float chance){
 	public CreateOutput(ItemStack stack){
 		this(stack,1F);
 	}

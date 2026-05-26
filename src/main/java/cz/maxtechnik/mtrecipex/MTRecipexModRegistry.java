@@ -19,8 +19,7 @@ public class MTRecipexModRegistry{
 	 */
 	public static void addShaped(String name,ItemStack result,Object... params){
 		JsonObject recipeJson=new JsonObject();
-		recipeJson.addProperty("type","minecraft:crafting_shaped");
-		recipeJson.addProperty("category","misc");
+		recipeJson.addProperty("type","crafting_shaped");
 		JsonArray patternArray=new JsonArray();
 		int i=0;
 		while(i<params.length&&params[i] instanceof String){
@@ -51,8 +50,7 @@ public class MTRecipexModRegistry{
 	 */
 	public static void addShapeless(String name,ItemStack result,Object... ingredients){
 		JsonObject recipeJson=new JsonObject();
-		recipeJson.addProperty("type","minecraft:crafting_shapeless");
-		recipeJson.addProperty("category","misc");
+		recipeJson.addProperty("type","crafting_shapeless");
 		JsonArray ingredientsArray=new JsonArray();
 		for(Object ing: ingredients){
 			if(ing instanceof ItemLike itemLike){
@@ -68,13 +66,53 @@ public class MTRecipexModRegistry{
 		recipeJson.add("result",resultObject);
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
-
-
 	/**
-	 *Processing (Pressing / Sandpaper)
+	 *Smithing Table
 	 */
-	public static void addCreateProcessing(String name,CreateRecipeType type,ItemLike ingredient,CreateOutput... outputs){
-		addCreateProcessing(name,type,ingredient,-1,outputs);
+	public static void addSmithingTransform(String name,ItemLike template,ItemLike base,ItemLike addition,ItemStack result){
+		JsonObject recipeJson=new JsonObject();
+		recipeJson.addProperty("type","minecraft:smithing_transform");
+		JsonObject templateObj=new JsonObject();
+		templateObj.addProperty("item",BuiltInRegistries.ITEM.getKey(template.asItem()).toString());
+		recipeJson.add("template",templateObj);
+		JsonObject baseObj=new JsonObject();
+		baseObj.addProperty("item",BuiltInRegistries.ITEM.getKey(base.asItem()).toString());
+		recipeJson.add("base",baseObj);
+		JsonObject additionObj=new JsonObject();
+		additionObj.addProperty("item",BuiltInRegistries.ITEM.getKey(addition.asItem()).toString());
+		recipeJson.add("addition",additionObj);
+		JsonObject resultObj=new JsonObject();
+		resultObj.addProperty("id",BuiltInRegistries.ITEM.getKey(result.getItem()).toString());
+		if(result.getCount()>1){
+			resultObj.addProperty("count",result.getCount());
+		}
+		recipeJson.add("result",resultObj);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
+	}
+	/**
+	 *Furnace
+	 */
+	public static void addSmelting(String name,ItemLike ingredient,ItemStack result){
+		addFurnace(name,FurnaceType.SMELTING,ingredient,result,0.1F,200);
+	}
+	/**
+	 *Furnaces (advanced)
+	 */
+	public static void addFurnace(String name,FurnaceType type,ItemLike ingredient,ItemStack result,float experience,int cookingTime){
+		JsonObject recipeJson=new JsonObject();
+		recipeJson.addProperty("type",type.id);
+		JsonObject ingredientObj=new JsonObject();
+		ingredientObj.addProperty("item",BuiltInRegistries.ITEM.getKey(ingredient.asItem()).toString());
+		recipeJson.add("ingredient",ingredientObj);
+		JsonObject resultObj=new JsonObject();
+		resultObj.addProperty("id",BuiltInRegistries.ITEM.getKey(result.getItem()).toString());
+		if(result.getCount()>1){
+			resultObj.addProperty("count",result.getCount());
+		}
+		recipeJson.add("result",resultObj);
+		recipeJson.addProperty("experience",experience);
+		recipeJson.addProperty("cookingtime",cookingTime);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	/**
 	 *Processing
@@ -91,8 +129,8 @@ public class MTRecipexModRegistry{
 		JsonArray resultsArray=new JsonArray();
 		for(CreateOutput out: outputs){
 			JsonObject resObj=new JsonObject();
-			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.stack().getItem()).toString());
-			resObj.addProperty("count",out.stack().getCount());
+			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.itemStack().getItem()).toString());
+			resObj.addProperty("count",out.itemStack().getCount());
 			if(out.chance()<1F){
 				resObj.addProperty("chance",out.chance());
 			}
@@ -152,8 +190,8 @@ public class MTRecipexModRegistry{
 		if(itemOutputs!=null){
 			for(CreateOutput out: itemOutputs){
 				JsonObject obj=new JsonObject();
-				obj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.stack().getItem()).toString());
-				obj.addProperty("count",out.stack().getCount());
+				obj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.itemStack().getItem()).toString());
+				obj.addProperty("count",out.itemStack().getCount());
 				if(out.chance()<1.0f){
 					obj.addProperty("chance",out.chance());
 				}
@@ -192,8 +230,8 @@ public class MTRecipexModRegistry{
 		recipeJson.add("ingredients",ingredientsArray);
 		JsonArray resultsArray=new JsonArray();
 		JsonObject resObj=new JsonObject();
-		resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(itemOutput.stack().getItem()).toString());
-		resObj.addProperty("count",itemOutput.stack().getCount());
+		resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(itemOutput.itemStack().getItem()).toString());
+		resObj.addProperty("count",itemOutput.itemStack().getCount());
 		if(itemOutput.chance()<1F) resObj.addProperty("chance",itemOutput.chance());
 		resultsArray.add(resObj);
 		recipeJson.add("results",resultsArray);
@@ -213,8 +251,8 @@ public class MTRecipexModRegistry{
 		JsonArray resultsArray=new JsonArray();
 		if(itemOutput!=null){
 			JsonObject resObj=new JsonObject();
-			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(itemOutput.stack().getItem()).toString());
-			resObj.addProperty("count",itemOutput.stack().getCount());
+			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(itemOutput.itemStack().getItem()).toString());
+			resObj.addProperty("count",itemOutput.itemStack().getCount());
 			resultsArray.add(resObj);
 		}
 		JsonObject fluidObj=new JsonObject();
@@ -249,8 +287,8 @@ public class MTRecipexModRegistry{
 		JsonArray resultsArray=new JsonArray();
 		for(CreateOutput out: outputs){
 			JsonObject resObj=new JsonObject();
-			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.stack().getItem()).toString());
-			resObj.addProperty("count",out.stack().getCount());
+			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.itemStack().getItem()).toString());
+			resObj.addProperty("count",out.itemStack().getCount());
 			if(out.chance()<1.0f) resObj.addProperty("chance",out.chance());
 			resultsArray.add(resObj);
 		}
@@ -360,8 +398,8 @@ public class MTRecipexModRegistry{
 		JsonArray resultsArray=new JsonArray();
 		for(CreateOutput out: finalResults){
 			JsonObject resObj=new JsonObject();
-			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.stack().getItem()).toString());
-			resObj.addProperty("count",out.stack().getCount());
+			resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(out.itemStack().getItem()).toString());
+			resObj.addProperty("count",out.itemStack().getCount());
 			if(out.chance()<1.0f) resObj.addProperty("chance",out.chance());
 			resultsArray.add(resObj);
 		}
