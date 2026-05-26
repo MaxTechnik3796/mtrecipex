@@ -1,7 +1,8 @@
 package cz.maxtechnik.mtrecipex.mixin;
 
 import com.google.gson.JsonElement;
-import cz.maxtechnik.mtrecipex.MTRecipexRegistry;
+import cz.maxtechnik.mtrecipex.MTRecipexMod;
+import cz.maxtechnik.mtrecipex.MTRecipexModRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -16,8 +17,7 @@ import java.util.Map;
 public class RecipeMixin{
 	@Inject(method="apply*", at=@At("HEAD"))
 	private void injectVirtualRecipes(Map<ResourceLocation,JsonElement> map,ResourceManager resourceManager,ProfilerFiller profiler,CallbackInfo ci){
-		System.out.println("====== MIXIN SPUŠTĚN: IMPORTUJI 1.7.10 STYLE RECEPTY ======");
-		// Prásk! Vezmeme celou mapu z našeho registru a nasypeme ji do Minecraftu
-		map.putAll(MTRecipexRegistry.getVirtualRecipes());
+		MTRecipexMod.LOGGER.info("Applying Virtual Recipes");
+		map.putAll(MTRecipexModRegistry.getVirtualRecipes());
 	}
 }
