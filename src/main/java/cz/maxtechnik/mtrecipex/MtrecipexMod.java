@@ -25,27 +25,46 @@ public class MtrecipexMod{
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
 		modContainer.registerConfig(ModConfig.Type.COMMON,MtrecipexModCommonConfig.SPEC);
-
 		MTRecipexRegistry.addShaped("dirt_to_diamond",
 				new ItemStack(Items.DIAMOND),
 				"DDD",
 				"DDD",
 				"DDD",
-				'D', Blocks.DIRT
+				'D',Blocks.DIRT
 		);
-
 		// Příklad 2: Crafting Beaconu (Majáku) z hlíny a železa
 		MTRecipexRegistry.addShaped("dirt_beacon",
 				new ItemStack(Blocks.BEACON,3),
 				"DDD",
 				"DID",
 				"DDD",
-				'D', Blocks.DIRT,
-				'I', Items.IRON_INGOT
+				'D',Blocks.DIRT,
+				'I',Items.IRON_INGOT
 		);
-
-
-
+		MTRecipexRegistry.addShapeless("clay_flint_to_iron",
+				new ItemStack(Items.IRON_INGOT,2),
+				Blocks.CLAY,Items.FLINT
+		);
+		// VARIANT 1: Crushing (Drcení) s vlastním ČASEM (250 ticků), bez tepla
+		MTRecipexRegistry.addCreateProcessing("crush_rose_bush","crushing",
+				Blocks.ROSE_BUSH,
+				250, // <-- Processing Time v tlacích (ticks)
+				CreateOutput.of(new ItemStack(Items.RED_DYE,4)),
+				CreateOutput.of(new ItemStack(Items.GREEN_DYE,1),0.5f)
+		);
+		// VARIANT 2: Mixing (Míchání) s ČASEM (400 ticků) a ZAHŘÁTÝM hořákem ("heated")
+		// Možnosti tepla: "none", "heated", "superheated"
+		MTRecipexRegistry.addCreateProcessing("blaze_mixing_test","mixing",
+				Blocks.DIRT,
+				HeatLevel.HEATED,   // <-- Heat Requirement level
+				CreateOutput.of(new ItemStack(Items.BLAZE_POWDER,2)),
+				CreateOutput.of(new ItemStack(Items.MAGMA_CREAM,1),0.25f)
+		);
+		// Klasický způsob bez času a tepla stále funguje též:
+		MTRecipexRegistry.addCreateProcessing("simple_mill","milling",
+				Blocks.COBBLESTONE,
+				CreateOutput.of(new ItemStack(Blocks.SAND))
+		);
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("MT-Recipex: Common Setup");

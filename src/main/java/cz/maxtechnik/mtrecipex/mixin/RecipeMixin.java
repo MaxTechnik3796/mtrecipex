@@ -12,14 +12,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
-
 @Mixin(RecipeManager.class)
-public class RecipeManagerMixin {
-
-	@Inject(method = "apply*", at = @At("HEAD"))
-	private void injectVirtualRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+public class RecipeMixin{
+	@Inject(method="apply*", at=@At("HEAD"))
+	private void injectVirtualRecipes(Map<ResourceLocation,JsonElement> map,ResourceManager resourceManager,ProfilerFiller profiler,CallbackInfo ci){
 		System.out.println("====== MIXIN SPUŠTĚN: IMPORTUJI 1.7.10 STYLE RECEPTY ======");
-
 		// Prásk! Vezmeme celou mapu z našeho registru a nasypeme ji do Minecraftu
 		map.putAll(MTRecipexRegistry.getVirtualRecipes());
 	}
