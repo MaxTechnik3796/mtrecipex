@@ -1,6 +1,6 @@
 ## MT-Recipex
 
-**MT-Recipex** is an advanced developer API mod for **Minecraft 1.21.1 (NeoForge)**. It restores the  recipe registration directly from Java, inspired by  old version **1.7.10** (`GameRegistry.addRecipe`).
+**MT-Recipex** is an advanced developer API mod for **Minecraft 1.21.1 (NeoForge)**. It restores the recipe registration directly from Java, inspired by old version **1.7.10** (`GameRegistry.addRecipe`).
 
 ---
 
@@ -19,7 +19,7 @@
 * **Furnace / Cooking (`Smelting`, `Blasting`, `Smoking`, `Campfire Cooking`):** Support for the regular furnace, blast furnace, smoker and camp fire.
 * **Smithing Table (`addSmithingTransform`):** Full specification of the modern smithing upgrade layout requiring a Template, a Base item, and an Addition ingredient.
 
-### 2. Create Mod
+### 2. Create Mod Processing
 * **Single-Ingredient Machines (`addCreateProcessing`):** Pressing, sandpaper polishing (`PRESSING`, `SANDPAPER_POLISHING`).
 * **Time-Dependent Machines:** Crushing and cutting (`CRUSHING`, `CUTTING`, `MILLING`,`HAUNTING`, `SPLASHING`) with an optional explicit `processingTime` parameter.
 * **Output Chances (`CreateOutput` Record):** Create processing outputs accept an array of `CreateOutput` objects, combining an `ItemStack` and a float drop chance (from `0.0F` to `1.0F`).
@@ -35,167 +35,213 @@
 
 ### 4. Sequenced Assembly
 * **`addCreateSequencedAssembly`:** Used for Precision Mechanisms and high-tech components.
-* **Complete Sub-Step Automation:** Manually coding JSONs for sequences is extremely tedious in 1.21.1  **MT-Recipex handles all of this automatically behind the scenes!** You only define the steps in their natural order.
-* **Built-in Step Factory Methods:** `stepPressing()`, `stepCutting(time)`, `stepFilling(FluidStack)`, `stepDeploying(ItemLike)`.
+* **Complete Sub-Step Automation:** Manually coding JSONs for sequences is extremely tedious in 1.21.1 **MT-Recipex handles all of this automatically behind the scenes!** You only define the steps in their natural order.
+* **Built-in Step Factory Methods:** `stepPressing()`, `stepCutting(time)`, `stepFilling(FluidStack)`, `海洋stepDeploying(ItemLike)`.
+
+### 5. Custom Raw JSON Recipes
+* **Custom (`addCustom`):** Allows you to build and inject a completely raw `JsonObject` for any custom recipe type from other mods that are not natively supported by the API.
 
 ---
 
 ## 💻 Code Examples (Cheat Sheet)
 
-Here is a preview of how clean and fast recipes are declared inside your mod:
-
-
-
-
-
-
 ```java
 import cz.maxtechnik.mtrecipex.MTRecipexModRegistry;
-public class MyModClass(){
-	MTRecipexModRegistry.addShaped("shaped_dirt_to_diamond",
-	new ItemStack(Items.DIAMOND),
-        "DDD",
-	"DID",
-	"DDD",
-	'D', Blocks.DIRT,
-	'I', Items.IRON_INGOT
-    );
+import cz.maxtechnik.mtrecipex.CreateRecipeType;
+import cz.maxtechnik.mtrecipex.HeatLevel;
+import cz.maxtechnik.mtrecipex.FurnaceType;
+import cz.maxtechnik.mtrecipex.CreateOutput;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
+public class MyModClass {
 
+    public static void registerRecipes() {
+        // ====================================================================
+        // 1. VANILLA RECIPES
+        // ====================================================================
 
-    MTRecipexModRegistry.addShapeless("shapeless_clay_and_flint",
-    new ItemStack(Items.IRON_INGOT, 2),
-    Blocks.CLAY,
-    Items.FLINT
-    );
+        //Shaped Crafting
+        MTRecipexModRegistry.addShaped("shaped_dirt_to_diamond",
+            new ItemStack(Items.DIAMOND),
+            "DDD",
+            "DID",
+            "DDD",
+            'D', Blocks.DIRT,
+            'I', Items.IRON_INGOT
+        );
 
-    MTRecipexModRegistry.addSmithingTransform("smithing_wood_to_stone",
-	Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE,
-	Items.WOODEN_SWORD,
-	Blocks.STONE,
-			new ItemStack(Items.STONE_SWORD)
-    );
+        //Shapeless Crafting
+        MTRecipexModRegistry.addShapeless("shapeless_clay_and_flint",
+            new ItemStack(Items.IRON_INGOT, 2),
+            Blocks.CLAY,
+            Items.FLINT
+        );
 
-MTRecipexModRegistry.addSmelting("smelt_dirt_to_iron", Blocks.DIRT, new ItemStack(Items.IRON_INGOT));
+        //Smithing Table
+        MTRecipexModRegistry.addSmithingTransform("smithing_wood_to_stone",
+            Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE,
+            Items.WOODEN_SWORD,
+            Blocks.STONE,
+            new ItemStack(Items.STONE_SWORD)
+        );
 
-MTRecipexModRegistry.addFurnace("advanced_blast_furnace_iron",
-	FurnaceType.BLASTING,                   // Typ pece (blasting, smoking, smelting...)
-	Blocks.IRON_ORE,                        // Vstupní surovina
-			new ItemStack(Items.IRON_INGOT, 2),     // Výstupní surovina
-    1.0F,                                   // Množství zkušeností (XP)
-			100                                     // Doba vaření v tickách (100 ticks = 5 sekund)
-			);
+        //Furnace (simple)
+        MTRecipexModRegistry.addSmelting("smelt_dirt_to_iron", Blocks.DIRT, new ItemStack(Items.IRON_INGOT));
 
-MTRecipexModRegistry.addCreateProcessing("crush_rose_bush_example",
-	CreateRecipeType.CRUSHING,
-	Blocks.ROSE_BUSH, // Vstupní blok
-			250,              // Čas zpracování v tickách (0 nebo méně čas vypne)
-			CreateOutput.of(new ItemStack(Items.RED_DYE, 4)),         // 100% šance na drop
-			CreateOutput.of(new ItemStack(Items.GREEN_DYE, 1), 0.5F)  // 50% šance na bonusový drop
-			);
+        //Smelting (any furnace or camp fire)
+        MTRecipexModRegistry.addFurnace("advanced_blast_furnace_iron",
+            FurnaceType.BLASTING,
+            Blocks.IRON_ORE,
+            new ItemStack(Items.IRON_INGOT, 2),
+            1.0F,
+            100
+        );
 
-MTRecipexModRegistry.addCreateBasin("basin_liquids_only",
-	CreateRecipeType.MIXING,
-	HeatLevel.HEATED, // Úroveň tepla (NONE, HEATED, SUPERHEATED)
-			new FluidStack[]{ new FluidStack(Fluids.WATER, 1000) }, // Pole vstupních fluidů
-			new FluidStack[]{ new FluidStack(Fluids.LAVA, 500) }    // Pole výstupních fluidů
-);
+        // ====================================================================
+        // 2. CREATE MOD PROCESSING
+        // ====================================================================
 
-MTRecipexModRegistry.addCreateBasin("basin_items_only",
-	CreateRecipeType.COMPACTING,
-	HeatLevel.NONE,
-			new ItemLike[]{ Blocks.COBBLESTONE, Blocks.SAND },      // Pole vstupních itemů
-			new CreateOutput[]{ CreateOutput.of(new ItemStack(Items.DIAMOND)) } // Pole výstupních itemů
-);
+        //Crushning
+        MTRecipexModRegistry.addCreateProcessing("crush_rose_bush_example",
+            CreateRecipeType.CRUSHING,
+            Blocks.ROSE_BUSH,
+            250,
+            CreateOutput.of(new ItemStack(Items.RED_DYE, 4)),
+            CreateOutput.of(new ItemStack(Items.GREEN_DYE, 1), 0.5F)
+        );
 
-MTRecipexModRegistry.addCreateBasin("basin_combined_advanced",
-	CreateRecipeType.MIXING,
-	HeatLevel.SUPERHEATED,
-			new ItemLike[]{ Items.SUGAR, Blocks.DIRT },               // Vstupní itemy
-			new FluidStack[]{ new FluidStack(Fluids.WATER, 500) },    // Vstupní fluidy
-			new CreateOutput[]{ CreateOutput.of(new ItemStack(Items.BLAZE_POWDER, 2)) }, // Výstupní itemy
-			new FluidStack[]{ new FluidStack(Fluids.LAVA, 250) }       // Výstupní fluidy
-);
+        // ====================================================================
+        // 3. BASIN BASED CREATE MACHINES
+        // ====================================================================
 
-MTRecipexModRegistry.addDifDistillation("distill_water_test",
-		new FluidStack(Fluids.WATER, 1000), // Vstupní tekutina
-    new FluidStack[]{                   // Pole výstupních tekutin
-		new FluidStack(Fluids.LAVA, 250),
-				new FluidStack(Fluids.WATER, 100)
-	}
-);
+        //Mixing (only items)
+        MTRecipexModRegistry.addCreateBasin("basin_liquids_only",
+            CreateRecipeType.MIXING,
+            HeatLevel.HEATED,
+            new FluidStack[]{ new FluidStack(Fluids.WATER, 1000) },
+            new FluidStack[]{ new FluidStack(Fluids.LAVA, 500) }
+        );
 
-MTRecipexModRegistry.addCreateFilling("fill_glass_bottle",
-	Items.GLASS_BOTTLE,               // Vstupní nádoba
-			new FluidStack(Fluids.WATER, 250), // Tekutina, která do ní nateče
-    CreateOutput.of(new ItemStack(Items.POTION)) // Výsledný naplněný předmět
-			);
+        //Compacting
+        MTRecipexModRegistry.addCreateBasin("basin_items_only",
+            CreateRecipeType.COMPACTING,
+            HeatLevel.NONE,
+            new ItemLike[]{ Blocks.COBBLESTONE, Blocks.SAND },
+            new CreateOutput[]{ CreateOutput.of(new ItemStack(Items.DIAMOND)) }
+        );
 
-MTRecipexModRegistry.addCreateEmptying("drain_water_bucket",
-	Items.WATER_BUCKET,                  // Vstupní plný předmět
-			CreateOutput.of(new ItemStack(Items.BUCKET)), // Co zbude v ruce/na pásu (může být i null)
-			new FluidStack(Fluids.WATER, 1000)   // Tekutina, která vyteče do potrubí
-);
+        //Mixing (items & fluids)
+        MTRecipexModRegistry.addCreateBasin("basin_combined_advanced",
+            CreateRecipeType.MIXING,
+            HeatLevel.SUPERHEATED,
+            new ItemLike[]{ Items.SUGAR, Blocks.DIRT },
+            new FluidStack[]{ new FluidStack(Fluids.WATER, 500) },
+            new CreateOutput[]{ CreateOutput.of(new ItemStack(Items.BLAZE_POWDER, 2)) },
+            new FluidStack[]{ new FluidStack(Fluids.LAVA, 250) }
+        );
 
-MTRecipexModRegistry.addCreateDeploying("deploy_flint_on_stone",
-	Blocks.STONE, Items.FLINT, // 1. Podložný blok na pásu, 2. Item držený deployerem
-			CreateOutput.of(new ItemStack(Items.ARROW)) // Výsledný drop na pásu
-			);
+        //Filling (Spouting)
+        MTRecipexModRegistry.addCreateFilling("fill_glass_bottle",
+            Items.GLASS_BOTTLE,
+            new FluidStack(Fluids.WATER, 250),
+            CreateOutput.of(new ItemStack(Items.POTION))
+        );
 
-MTRecipexModRegistry.addCreateDeploying("deploy_consume_log",
-	Blocks.OAK_LOG, Items.IRON_AXE,
-			true, // TRUE = spotřebuje/zničí sekyru | FALSE = sekyra zůstane v ruce deployeru
-			CreateOutput.of(new ItemStack(Blocks.STRIPPED_OAK_LOG))
-			);
+        //Emptying (Item Drain)
+        MTRecipexModRegistry.addCreateEmptying("drain_water_bucket",
+            Items.WATER_BUCKET,
+            CreateOutput.of(new ItemStack(Items.BUCKET)),
+            new FluidStack(Fluids.WATER, 1000)
+        );
 
-MTRecipexModRegistry.addCreateItemApplication("apply_iron_on_wood",
-	Blocks.OAK_LOG, Items.IRON_INGOT, // Kliknutím železa na dubové dřevo...
-			new ItemStack(Items.SHIELD)        // ...vznikne štít
-);
+        //Deploying
+        MTRecipexModRegistry.addCreateDeploying("deploy_flint_on_stone",
+            Blocks.STONE, Items.FLINT,
+            CreateOutput.of(new ItemStack(Items.ARROW))
+        );
 
-MTRecipexModRegistry.addCreateMechanicalCrafting("mechanical_simple_sword",
-		new ItemStack(Items.DIAMOND_SWORD),
-    "D",
-			"D",
-			"S",
-			'D', Blocks.DIAMOND_BLOCK,
-			'S', Items.STICK
-);
+        //Deploying (consume/damage held item)
+        MTRecipexModRegistry.addCreateDeploying("deploy_consume_log",
+            Blocks.OAK_LOG, Items.IRON_AXE,
+            true,
+            CreateOutput.of(new ItemStack(Blocks.STRIPPED_OAK_LOG))
+        );
 
-MTRecipexModRegistry.addCreateMechanicalCrafting("mechanical_strict_pickaxe",
-		new ItemStack(Items.DIAMOND_PICKAXE),
-    false, // FALSE = vzorec se nesmí zrcadlově otočit (musí být přesně takto)
-			"DDD",
-			" S ",
-			" S ",
-			'D', Items.DIAMOND,
-			'S', Items.STICK
-);
+        //ItemApplication (Casing Crafting)
+        MTRecipexModRegistry.addCreateItemApplication("apply_iron_on_wood",
+            Blocks.OAK_LOG, Items.IRON_INGOT,
+            new ItemStack(Items.SHIELD)
+        );
 
-MTRecipexModRegistry.addCreateSequencedAssembly("precision_diamond_assembly",
-	Items.IRON_INGOT,     // 1. Vstupní surovina na začátku pásu
-	Items.GOLD_INGOT,     // 2. Přechodný nekompletní item (transitional_item)
-			5,                    // 3. Počet smyček/opakování (loops)
-			new CreateOutput[]{ CreateOutput.of(new ItemStack(Items.DIAMOND)) }, // 4. Finální pole odměn
+        //MechanicalCrafting
+        MTRecipexModRegistry.addCreateMechanicalCrafting("mechanical_simple_sword",
+            new ItemStack(Items.DIAMOND_SWORD),
+            "D",
+            "D",
+            "S",
+            'D', Blocks.DIAMOND_BLOCK,
+            'S', Items.STICK
+        );
 
-			// 5. Následuje pole sub-kroků za sebou (voláš vestavěné step funkce z registru):
-			MTRecipexModRegistry.stepPressing(),                                      // Krok 1: Lis
-			MTRecipexModRegistry.stepCutting(120),                                    // Krok 2: Pila (120 ticks)
-			MTRecipexModRegistry.stepFilling(new FluidStack(Fluids.WATER, 250)),      // Krok 3: Plnička vodou
-			MTRecipexModRegistry.stepDeploying(Items.FLINT)                           // Krok 4: Deployer s křesadlem
-			);
+        //MechanicalCrafting (no mirrored)
+        MTRecipexModRegistry.addCreateMechanicalCrafting("mechanical_strict_pickaxe",
+            new ItemStack(Items.DIAMOND_PICKAXE),
+            false,
+            "DDD",
+            " SD",
+            "S D",
+            'D', Items.DIAMOND,
+            'S', Items.STICK
+        );
+
+        // ====================================================================
+        // 4. SEQUENCED ASSEMBLY
+        // ====================================================================
+
+        MTRecipexModRegistry.addCreateSequencedAssembly("precision_diamond_assembly",
+            Items.IRON_INGOT,
+            Items.GOLD_INGOT,
+            5,
+            new CreateOutput[]{ CreateOutput.of(new ItemStack(Items.DIAMOND)) },
+            MTRecipexModRegistry.stepPressing(),
+            MTRecipexModRegistry.stepCutting(120),
+            MTRecipexModRegistry.stepFilling(new FluidStack(Fluids.WATER, 250)),
+            MTRecipexModRegistry.stepDeploying(Items.FLINT)
+        );
+
+        // ====================================================================
+        // 5. CUSTOM MOD RECIPES (DIF)
+        // ====================================================================
+
+        //Distillation
+        MTRecipexModRegistry.addDifDistillation("distill_water_test",
+            new FluidStack(Fluids.WATER, 1000),
+            new FluidStack[]{
+                new FluidStack(Fluids.LAVA, 250),
+                new FluidStack(Fluids.WATER, 100)
+            }
+        );
+        
+        // ====================================================================
+        // 6. COMPLETELY CUSTOM RAW JSON RECIPE
+        // ====================================================================
+
+        JsonObject customJson = new JsonObject();
+        customJson.addProperty("type", "examplemod:freezing");
+
+        JsonObject ingredientObj = new JsonObject();
+        ingredientObj.addProperty("item", "minecraft:water_bucket");
+        customJson.add("ingredient", ingredientObj);
+
+        JsonObject resultObj = new JsonObject();
+        resultObj.addProperty("id", "minecraft:ice");
+        resultObj.addProperty("count", 1);
+        customJson.add("result", resultObj);
+
+        MTRecipexModRegistry.addCustom("custom_raw_freezing_ice", customJson);
+    }
 }
-
-
-```
-
-
-
-
-
-
-
-
-
-
-

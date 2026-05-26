@@ -408,6 +408,12 @@ public class MTRecipexModRegistry{
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	/**
+	 *Custom Recipe
+	 */
+	public static void addCustom(String name,JsonObject jsonObject){
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),jsonObject);
+	}
+	/**
 	 *Distillation
 	 */
 	public static void addDifDistillation(String name,FluidStack input,FluidStack[] outputs){
