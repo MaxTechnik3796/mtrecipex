@@ -1,8 +1,8 @@
 package cz.maxtechnik.mtrecipex;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -25,6 +25,27 @@ public class MtrecipexMod{
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
 		modContainer.registerConfig(ModConfig.Type.COMMON,MtrecipexModCommonConfig.SPEC);
+
+		MTRecipexRegistry.addShaped("dirt_to_diamond",
+				new ItemStack(Items.DIAMOND),
+				"DDD",
+				"DDD",
+				"DDD",
+				'D', Blocks.DIRT
+		);
+
+		// Příklad 2: Crafting Beaconu (Majáku) z hlíny a železa
+		MTRecipexRegistry.addShaped("dirt_beacon",
+				new ItemStack(Blocks.BEACON,3),
+				"DDD",
+				"DID",
+				"DDD",
+				'D', Blocks.DIRT,
+				'I', Items.IRON_INGOT
+		);
+
+
+
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("MT-Recipex: Common Setup");
