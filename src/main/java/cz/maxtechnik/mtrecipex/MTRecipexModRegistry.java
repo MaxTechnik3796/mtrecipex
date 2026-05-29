@@ -106,9 +106,7 @@ public class MTRecipexModRegistry{
 		recipeJson.add("ingredient",ingredientObj);
 		JsonObject resultObj=new JsonObject();
 		resultObj.addProperty("id",BuiltInRegistries.ITEM.getKey(result.getItem()).toString());
-		if(result.getCount()>1){
-			resultObj.addProperty("count",result.getCount());
-		}
+		if(result.getCount()>1) resultObj.addProperty("count",result.getCount());
 		recipeJson.add("result",resultObj);
 		recipeJson.addProperty("experience",experience);
 		recipeJson.addProperty("cookingtime",cookingTime);
@@ -433,6 +431,27 @@ public class MTRecipexModRegistry{
 		}
 		recipeJson.add("outputs",outputsArray);
 		recipeJson.add("input",inputJson);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
+	}
+	/**
+	 *Coke Oven
+	 */
+	public static void addDifCokeOven(String name,ItemLike input,int inputCount,ItemStack result,FluidStack fluidOutput,int processingTime){
+		JsonObject recipeJson=new JsonObject();
+		recipeJson.addProperty("type","dif:coke_oven");
+		JsonObject ingredientObj=new JsonObject();
+		ingredientObj.addProperty("item",BuiltInRegistries.ITEM.getKey(input.asItem()).toString());
+		recipeJson.add("ingredient",ingredientObj);
+		recipeJson.addProperty("ingredient_count",inputCount);
+		JsonObject resultObj=new JsonObject();
+		resultObj.addProperty("id",BuiltInRegistries.ITEM.getKey(result.getItem()).toString());
+		if(result.getCount()>1) resultObj.addProperty("count",result.getCount());
+		recipeJson.add("result",resultObj);
+		JsonObject fluidResultObj=new JsonObject();
+		fluidResultObj.addProperty("id",fluidOutput.toString());
+		fluidResultObj.addProperty("amount",fluidOutput.getAmount());
+		recipeJson.add("fluid_output",fluidResultObj);
+		recipeJson.addProperty("processing_time",processingTime);
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	public static JsonObject stepPressing(){
