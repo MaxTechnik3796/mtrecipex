@@ -10,8 +10,29 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("unused")
-public record SmithingExtraRecipe(SizedIngredientExtra template,SizedIngredientExtra base,SizedIngredientExtra addition,
-                                  ItemStack result) implements SmithingRecipe{
+public class SmithingExtraRecipe implements SmithingRecipe{
+	protected final SizedIngredientExtra template;
+	protected final SizedIngredientExtra base;
+	protected final SizedIngredientExtra addition;
+	protected final ItemStack result;
+	public SmithingExtraRecipe(SizedIngredientExtra template,SizedIngredientExtra base,SizedIngredientExtra addition,ItemStack result){
+		this.template=template;
+		this.base=base;
+		this.addition=addition;
+		this.result=result;
+	}
+	public SizedIngredientExtra template(){
+		return this.template;
+	}
+	public SizedIngredientExtra base(){
+		return this.base;
+	}
+	public SizedIngredientExtra addition(){
+		return this.addition;
+	}
+	public ItemStack result(){
+		return this.result;
+	}
 	@Override
 	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
 		return this.template.ingredient().test(itemStack)&&itemStack.getCount()>=this.template.count();
