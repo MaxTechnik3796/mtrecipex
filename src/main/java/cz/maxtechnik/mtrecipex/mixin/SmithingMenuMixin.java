@@ -32,9 +32,9 @@ public abstract class SmithingMenuMixin{
 		SmithingExtraRecipe recipe=ACTIVE_EXTRA_RECIPE.get();
 		if(recipe!=null){
 			SmithingMenu menu=(SmithingMenu)(Object)this;
-			mtrecipex$shrinkExtra(menu,0,recipe.template().count());
-			mtrecipex$shrinkExtra(menu,1,recipe.base().count());
-			mtrecipex$shrinkExtra(menu,2,recipe.addition().count());
+			mtrecipex$shrinkExtra(menu,0,recipe.template.count());
+			mtrecipex$shrinkExtra(menu,1,recipe.base.count());
+			mtrecipex$shrinkExtra(menu,2,recipe.addition.count());
 		}
 		ACTIVE_EXTRA_RECIPE.remove();
 	}
