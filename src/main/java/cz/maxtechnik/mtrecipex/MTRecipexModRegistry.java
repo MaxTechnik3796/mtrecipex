@@ -90,6 +90,34 @@ public class MTRecipexModRegistry{
 		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
 	}
 	/**
+	 *Smithing Table Extra (with count)
+	 */
+	public static void addSmithingExtra(String name,ItemStack template,ItemStack base,ItemStack addition,ItemStack result){
+		JsonObject recipeJson=new JsonObject();
+		recipeJson.addProperty("type",MTRecipexMod.MODID+":smithing_extra");
+		JsonObject templateObj=new JsonObject();
+		templateObj.addProperty("item",BuiltInRegistries.ITEM.getKey(template.getItem()).toString());
+		if(template.getCount()>1)
+			templateObj.addProperty("count",template.getCount());
+		recipeJson.add("template",templateObj);
+		JsonObject baseObj=new JsonObject();
+		baseObj.addProperty("item",BuiltInRegistries.ITEM.getKey(base.getItem()).toString());
+		if(base.getCount()>1)
+			baseObj.addProperty("count",base.getCount());
+		recipeJson.add("base",baseObj);
+		JsonObject additionObj=new JsonObject();
+		additionObj.addProperty("item",BuiltInRegistries.ITEM.getKey(addition.getItem()).toString());
+		if(addition.getCount()>1)
+			additionObj.addProperty("count",addition.getCount());
+		recipeJson.add("addition",additionObj);
+		JsonObject resultObj=new JsonObject();
+		resultObj.addProperty("id",BuiltInRegistries.ITEM.getKey(result.getItem()).toString());
+		if(result.getCount()>1)
+			resultObj.addProperty("count",result.getCount());
+		recipeJson.add("result",resultObj);
+		RECIPIES.put(ResourceLocation.fromNamespaceAndPath(MTRecipexMod.MODID,name),recipeJson);
+	}
+	/**
 	 *Furnace
 	 */
 	public static void addSmelting(String name,ItemLike ingredient,ItemStack result){

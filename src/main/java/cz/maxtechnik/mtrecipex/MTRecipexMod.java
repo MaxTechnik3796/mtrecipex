@@ -3,6 +3,8 @@ package cz.maxtechnik.mtrecipex;
 import com.mojang.logging.LogUtils;
 import cz.maxtechnik.mtrecipex.recipe.SmithingExtraRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,6 +27,7 @@ public class MTRecipexMod{
 		RECIPE_SERIALIZERS.register(modEventBus);
 		modEventBus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
+		//MTRecipexModRegistry.addSmithingExtra("extra",new ItemStack(Items.SUGAR,3),new ItemStack(Items.STONE,64),new ItemStack(Items.STONE_HOE),new ItemStack(Items.NAME_TAG,5));
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("MT-Recipex: Common Setup");
