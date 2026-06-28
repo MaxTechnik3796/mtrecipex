@@ -14,6 +14,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
 import java.util.function.Supplier;
+@SuppressWarnings("unused")
 @Mod(MTRecipexMod.MODID)
 public class MTRecipexMod{
 	public static final String MODID="mtrecipex";
