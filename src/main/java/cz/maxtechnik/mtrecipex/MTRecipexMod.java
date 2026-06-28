@@ -3,8 +3,6 @@ package cz.maxtechnik.mtrecipex;
 import com.mojang.logging.LogUtils;
 import cz.maxtechnik.mtrecipex.recipe.SmithingExtraRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;

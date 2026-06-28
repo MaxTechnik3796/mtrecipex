@@ -23,18 +23,18 @@ public abstract class SmithingMenuMixin{
 		ItemStack addition=menu.getSlot(2).getItem();
 		SmithingRecipeInput input=new SmithingRecipeInput(template.copy(),base.copy(),addition.copy());
 		var optional=player.level().getRecipeManager().getRecipeFor(RecipeType.SMITHING,input,player.level());
-		if(optional.isPresent()&&optional.get().value() instanceof SmithingExtraRecipe extraRecipe) ACTIVE_EXTRA_RECIPE.set(extraRecipe);
+		if(optional.isPresent()&&optional.get().value() instanceof SmithingExtraRecipe extraRecipe)
+			ACTIVE_EXTRA_RECIPE.set(extraRecipe);
 		else ACTIVE_EXTRA_RECIPE.remove();
-
 	}
 	@Inject(method="onTake", at=@At("RETURN"))
 	private void mtrecipex$onTakeReturn(Player player,ItemStack stack,CallbackInfo ci){
 		SmithingExtraRecipe recipe=ACTIVE_EXTRA_RECIPE.get();
 		if(recipe!=null){
 			SmithingMenu menu=(SmithingMenu)(Object)this;
-			mtrecipex$shrinkExtra(menu,0,recipe.template.count());
-			mtrecipex$shrinkExtra(menu,1,recipe.base.count());
-			mtrecipex$shrinkExtra(menu,2,recipe.addition.count());
+			mtrecipex$shrinkExtra(menu,0,recipe.template().count());
+			mtrecipex$shrinkExtra(menu,1,recipe.base().count());
+			mtrecipex$shrinkExtra(menu,2,recipe.addition().count());
 		}
 		ACTIVE_EXTRA_RECIPE.remove();
 	}
