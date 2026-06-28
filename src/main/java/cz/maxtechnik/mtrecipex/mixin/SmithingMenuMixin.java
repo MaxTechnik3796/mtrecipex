@@ -15,6 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class SmithingMenuMixin{
 	@Unique
 	private static final ThreadLocal<SmithingExtraRecipe> ACTIVE_EXTRA_RECIPE=new ThreadLocal<>();
+	@Unique
+	private static final ThreadLocal<Integer> TEMPLATE_COST=new ThreadLocal<>();
+	@Unique
+	private static final ThreadLocal<Integer> BASE_COST=new ThreadLocal<>();
+	@Unique
+	private static final ThreadLocal<Integer> ADDITION_COST=new ThreadLocal<>();
 	@Inject(method="onTake", at=@At("HEAD"))
 	private void mtrecipex$onTakeHead(Player player,ItemStack stack,CallbackInfo ci){
 		SmithingMenu menu=(SmithingMenu)(Object)this;
@@ -23,34 +29,45 @@ public abstract class SmithingMenuMixin{
 		ItemStack addition=menu.getSlot(2).getItem();
 		SmithingRecipeInput input=new SmithingRecipeInput(template.copy(),base.copy(),addition.copy());
 		var optional=player.level().getRecipeManager().getRecipeFor(RecipeType.SMITHING,input,player.level());
-		if(optional.isPresent()&&optional.get().value() instanceof SmithingExtraRecipe extraRecipe)
+		if(optional.isPresent()&&optional.get().value() instanceof SmithingExtraRecipe extraRecipe){
 			ACTIVE_EXTRA_RECIPE.set(extraRecipe);
-		else ACTIVE_EXTRA_RECIPE.remove();
+			TEMPLATE_COST.set(extraRecipe.getTemplateConsumeCount(input));
+			BASE_COST.set(extraRecipe.getBaseConsumeCount(input));
+			ADDITION_COST.set(extraRecipe.getAdditionConsumeCount(input));
+		}else{
+			mtrecipex$clearThreads();
+		}
 	}
 	@Inject(method="onTake", at=@At("RETURN"))
 	private void mtrecipex$onTakeReturn(Player player,ItemStack stack,CallbackInfo ci){
 		SmithingExtraRecipe recipe=ACTIVE_EXTRA_RECIPE.get();
 		if(recipe!=null){
 			SmithingMenu menu=(SmithingMenu)(Object)this;
-			ItemStack template=menu.getSlot(0).getItem();
-			ItemStack base=menu.getSlot(1).getItem();
-			ItemStack addition=menu.getSlot(2).getItem();
-			SmithingRecipeInput input=new SmithingRecipeInput(template.copy(),base.copy(),addition.copy());
-			mtrecipex$shrinkExtra(menu,0,recipe.getTemplateConsumeCount(input));
-			mtrecipex$shrinkExtra(menu,1,recipe.getBaseConsumeCount(input));
-			mtrecipex$shrinkExtra(menu,2,recipe.getAdditionConsumeCount(input));
+			mtrecipex$shrinkExtra(menu,0,TEMPLATE_COST.get());
+			mtrecipex$shrinkExtra(menu,1,BASE_COST.get());
+			mtrecipex$shrinkExtra(menu,2,ADDITION_COST.get());
 		}
-		ACTIVE_EXTRA_RECIPE.remove();
+		mtrecipex$clearThreads();
 	}
 	@Unique
-	private void mtrecipex$shrinkExtra(SmithingMenu menu,int slotIndex,int recipeCount){
-		if(recipeCount>1){
+	private void mtrecipex$shrinkExtra(SmithingMenu menu,int slotIndex,Integer recipeCount){
+		if(recipeCount!=null&&recipeCount>1){
 			ItemStack slotStack=menu.getSlot(slotIndex).getItem();
 			if(!slotStack.isEmpty()){
 				slotStack.shrink(recipeCount-1);
-				if(slotStack.isEmpty()||slotStack.getCount()<=0) menu.getSlot(slotIndex).set(ItemStack.EMPTY);
-				else menu.getSlot(slotIndex).set(slotStack);
+				if(slotStack.isEmpty()||slotStack.getCount()<=0){
+					menu.getSlot(slotIndex).set(ItemStack.EMPTY);
+				}else{
+					menu.getSlot(slotIndex).set(slotStack);
+				}
 			}
 		}
+	}
+	@Unique
+	private static void mtrecipex$clearThreads(){
+		ACTIVE_EXTRA_RECIPE.remove();
+		TEMPLATE_COST.remove();
+		BASE_COST.remove();
+		ADDITION_COST.remove();
 	}
 }
