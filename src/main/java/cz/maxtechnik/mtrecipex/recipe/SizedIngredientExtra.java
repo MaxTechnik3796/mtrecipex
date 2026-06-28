@@ -15,23 +15,21 @@ public record SizedIngredientExtra(Ingredient ingredient,int count){
 					JsonElement json=dynamic.convert(JsonOps.INSTANCE).getValue();
 					Ingredient ing=Ingredient.CODEC.parse(JsonOps.INSTANCE,json).getOrThrow();
 					int count=1;
-					if(json.isJsonObject()&&json.getAsJsonObject().has("count")){
+					if(json.isJsonObject()&&json.getAsJsonObject().has("count"))
 						count=json.getAsJsonObject().get("count").getAsInt();
-					}
 					return DataResult.success(new SizedIngredientExtra(ing,count));
-				}catch(Exception e){
-					return DataResult.error(()->e.getMessage());
+				}catch(Exception exception){
+					return DataResult.error(exception::getMessage);
 				}
 			},
 			sized->{
 				try{
 					JsonElement json=Ingredient.CODEC.encodeStart(JsonOps.INSTANCE,sized.ingredient()).getOrThrow();
-					if(json.isJsonObject()){
+					if(json.isJsonObject())
 						json.getAsJsonObject().addProperty("count",sized.count());
-					}
 					return DataResult.success(new Dynamic<>(JsonOps.INSTANCE,json));
-				}catch(Exception e){
-					return DataResult.error(()->e.getMessage());
+				}catch(Exception exception){
+					return DataResult.error(exception::getMessage);
 				}
 			}
 	);

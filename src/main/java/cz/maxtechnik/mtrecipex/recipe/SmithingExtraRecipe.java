@@ -6,23 +6,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmithingRecipe;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-public class SmithingExtraRecipe implements SmithingRecipe{
-	public final SizedIngredientExtra template;
-	public final SizedIngredientExtra base;
-	public final SizedIngredientExtra addition;
-	public final ItemStack result;
-	public SmithingExtraRecipe(SizedIngredientExtra template,SizedIngredientExtra base,SizedIngredientExtra addition,ItemStack result){
-		this.template=template;
-		this.base=base;
-		this.addition=addition;
-		this.result=result;
-	}
+public record SmithingExtraRecipe(SizedIngredientExtra template,SizedIngredientExtra base,SizedIngredientExtra addition,ItemStack result) implements SmithingRecipe{
 	@Override
 	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
 		return this.template.ingredient().test(itemStack)&&itemStack.getCount()>=this.template.count();
@@ -50,8 +37,8 @@ public class SmithingExtraRecipe implements SmithingRecipe{
 		return this.result;
 	}
 	@Override
-	public @NotNull net.minecraft.world.item.crafting.RecipeType<?> getType(){
-		return net.minecraft.world.item.crafting.RecipeType.SMITHING;
+	public @NotNull RecipeType<?> getType(){
+		return RecipeType.SMITHING;
 	}
 	@Override
 	public @NotNull RecipeSerializer<?> getSerializer(){
